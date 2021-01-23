@@ -1,6 +1,7 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <string.h>
+#include <sys/random.h>
 #include <gmp.h>
 
 mpz_t number;
@@ -9,16 +10,14 @@ unsigned long setsNumber = 15;
 void generateRandomNumber() {
     int isTrue = 0;
     gmp_randstate_t randomState;
-    unsigned long seed;
+    char seed[20];
 
-    // Randomize system time
-    sleep(3);
-    seed = time(NULL);
+    getrandom(&seed, sizeof(seed), 0);
     mpz_inits(number, NULL);
-    
+
     // Generate random number
     gmp_randinit_mt(randomState);
-    gmp_randseed_ui(randomState, seed);
+    gmp_randseed_ui(randomState, (long int)seed);
     mpz_urandomb(number, randomState, 1024);
     
     // Check if the number is prime or probably prime
